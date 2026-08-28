@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -47,7 +48,7 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    result=board.copy()
+    result=copy.deepcopy(board)
     i, j = action
 
     if result[i][j] is not EMPTY:
@@ -86,7 +87,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if sum(x is not None for row in board for x in row)==0 or winner(board) is not None: 
+    if sum(x is not EMPTY for row in board for x in row)==9 or winner(board) is not None: 
         return True 
     else: 
         return False
@@ -112,11 +113,15 @@ def minimax(board):
     """
     act=None
 
+    if terminal(board)==True:
+        return utility(board)
+
     if player(board)==X: # X is the maximizing player
         value=-math.inf
 
         for action in actions(board):
             if value<minvalue(result(board,action)):
+                value=minvalue(result(board,action))
                 act=action
 
     if player(board)==O: # O is the minimizing player
@@ -124,6 +129,7 @@ def minimax(board):
     
         for action in actions(board):
             if value>maxvalue(result(board,action)):
+                value=maxvalue(result(board,action))
                 act=action
 
     return act
@@ -139,21 +145,16 @@ def maxvalue(board):
 
     return v
 
+
 def minvalue(board):
     if terminal(board)==True:
-            return utility(board)
+        return utility(board)
     
     v=math.inf
     
     for action in actions(board):
         v=min(v,maxvalue(result(board,action)))
-    
+
     return v
 
-if __name__ == "__main__":
-    board=[[O, X, X],
-            [EMPTY, EMPTY, EMPTY],
-            [X, O, O]]
-
-    winner=winner(board)
-    print(winner)
+    
