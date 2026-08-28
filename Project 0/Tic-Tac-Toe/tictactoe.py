@@ -51,6 +51,9 @@ def result(board, action):
     result=copy.deepcopy(board)
     i, j = action
 
+    if i<0 or i>2 or j<0 or j>2:
+        raise ValueError
+
     if result[i][j] is not EMPTY:
         raise ValueError
     else:
@@ -114,7 +117,7 @@ def minimax(board):
     act=None
 
     if terminal(board)==True:
-        return utility(board)
+        return None
 
     if player(board)==X: # X is the maximizing player
         value=-math.inf
